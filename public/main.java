@@ -288,8 +288,6 @@ class InputNode extends Node {
 
 // *** //
 
-import java.util.Arrays;
-
 
 Game g;
 int frames = 0, nextMove = 0;
