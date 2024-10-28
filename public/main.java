@@ -501,7 +501,7 @@ class SnakeMLP {
   void _init(int[] shape, Game g) {
     this.game = g;
     float[] state = g.state();
-    this.inputs = new Node[state.length];
+    this.inputs = new InputNode[state.length];
     this.shape = shape;
     
     
