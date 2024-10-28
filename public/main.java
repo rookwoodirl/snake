@@ -236,6 +236,7 @@ public class Game {
 
 // *** //
 
+
 class Node {
   Node[] targets;
   float[] weights;
@@ -272,6 +273,17 @@ class Node {
     
     return activation(v);
   }
+}
+
+class InputNode extends Node {
+    InputNode(Game g, int m) {
+        this.g = g;
+        this.m = m;
+    }
+
+    float value() {
+        return g[m];
+    }
 }
 
 // *** //
@@ -495,11 +507,7 @@ class SnakeMLP {
     
     for (int j = 0; j < state.length; j++) {
       int m = j;
-      this.inputs[j] = new Node(null) {
-        float value() {
-          return g.state[m];
-        }
-      };
+      this.inputs[j] = new InputNode(g, m);
     }
     
     Node[] prevLayer = this.inputs;
