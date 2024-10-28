@@ -1,3 +1,22 @@
+class Body {
+    int x, y; // coordinates
+    Body prev, next;
+    
+    Body(int x, int y) {
+      this.x = x;
+      this.y = y;
+      
+    }
+    
+    
+    boolean equals(Body b) {
+      if (b == null)
+        return false;
+      return this.x == b.x && this.y == b.y;
+    }
+    
+  }
+
 public class Game {
   
   int BLANK = 0, HEAD = 1, BODY = 2, APPLE = 3;
@@ -49,24 +68,7 @@ public class Game {
     
   }
   
-  class Body {
-    int x, y; // coordinates
-    Body prev, next;
-    
-    Body(int x, int y) {
-      this.x = x;
-      this.y = y;
-      
-    }
-    
-    
-    boolean equals(Body b) {
-      if (b == null)
-        return false;
-      return this.x == b.x && this.y == b.y;
-    }
-    
-  }
+  
   
   Body head, tail, apple;
   int snakeLength = 0;
