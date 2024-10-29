@@ -3,6 +3,7 @@
 int sl_board = 7;     // how many squares per side for the board game
 int sl_games = 20;    // how many games per side
 int sl_screen;
+int frames = 0;
 float sq_size;
 int[] shape;
 
@@ -17,7 +18,7 @@ void setup() {
   size(800, 800);
   sl_screen = width;
   sq_size = float(sl_screen) / sl_board / sl_games;
-  shape = new int[] { 10, 8, 4 };
+  shape = new int[] { 8, 4 };
   
   games = new Game[sl_games * sl_games];
   
@@ -33,6 +34,7 @@ void setup() {
 }
 
 void draw() {
+  println(frames++);
   for (Game game : games) {
     game.draw();
   }
@@ -90,17 +92,17 @@ void draw() {
 }
 
 class InputNode extends Node {
-  float[] state;
+  Game game;
   int idx;
   
-  InputNode(float[] state, int idx) {
+  InputNode(Game game, int idx) {
     super();
-    this.state = state;
+    this.game = game;
     this.idx = idx;
   }
   
   double value() {
-    return this.state[this.idx];
+    return this.game.state[this.idx];
   }
 }
 
@@ -121,8 +123,9 @@ class MLP extends Player {
       this.layers[i] = new Node[shape[i]];
     }
     
-    for (int i = 0; i < this.layers[0].length; i++)
-      this.layers[0][i] = new InputNode(game.state, i);
+    for (int i = 0; i < this.layers[0].length; i++) {
+      this.layers[0][i] = new InputNode(game, i);
+    }
       
     for (int i = 1; i < this.layers.length; i++) 
       for (int j = 0; j < this.layers[i].length; j++)
@@ -307,7 +310,7 @@ class Game {
   }
   
   void reset() {
-    this.score = 0;
+    this.score = sl_board * sl_board;
     this.head = new Body(int(sl_board / 2), int(sl_board / 2));
     this.new_apple();
     this.state = this.get_state();
@@ -327,18 +330,24 @@ class Game {
     float[] apple = new float[sl_board * sl_board];
     apple[this.apple_y * sl_board + this.apple_x] = 1;
 
-    float[] walls = new float[2] {
+    float[] walls = new float[] {
       float(this.head.board_x) / sl_board,
       float(this.head.board_y) / sl_board
     };
     
 
-    return (float[]) concat(head, apple, walls);
+    return (float[]) concat(head, concat(apple, walls));
 
   }
   
   
   int move(int x, int y) {
+    
+      if (this.score < 0) {
+        this.playing = false;
+        return 0;
+      }
+    
       Body new_head = this.head.move(x, y);
       
       // check out-of-bounds
