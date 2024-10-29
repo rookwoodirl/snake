@@ -11,12 +11,13 @@ Game[] games;   // tracking the games going on
 int generation = 0;
 
 void setup() {
-  frameRate(2);
+  frameRate(10);
+  strokeWeight(0.5);
   
   size(800, 800);
   sl_screen = width;
   sq_size = float(sl_screen) / sl_board / sl_games;
-  shape = new int[] { 8, 4 };
+  shape = new int[] { 10, 8, 4 };
   
   games = new Game[sl_games * sl_games];
   
@@ -82,7 +83,7 @@ void draw() {
       
     }
     generation += 1;
-    println("generation: ", generation);
+    println("generation: ", generation, scores[scores.length-1]);
   }
   
   
@@ -320,12 +321,20 @@ class Game {
   }
   
   float[] get_state() {
-    return new float[] {
-      float(this.apple_x) / sl_board,
-      float(this.apple_y) / sl_board,
+    float[] head = new float[sl_board * sl_board];
+    head[this.head.board_y * sl_board + this.head.board_x] = 1;
+    
+    float[] apple = new float[sl_board * sl_board];
+    apple[this.apple_y * sl_board + this.apple_x] = 1;
+
+    float[] walls = new float[2] {
       float(this.head.board_x) / sl_board,
       float(this.head.board_y) / sl_board
     };
+    
+
+    return (float[]) concat(head, apple, walls);
+
   }
   
   
@@ -347,7 +356,8 @@ class Game {
       }
       
       this.head.drop_tail();
-      return 1;
+      this.state = this.get_state();
+      return -1;
     
   }
   
