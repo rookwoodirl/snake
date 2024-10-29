@@ -11,7 +11,7 @@ Game[] games;   // tracking the games going on
 int generation = 0;
 
 void setup() {
-  frameRate(10);
+  frameRate(2);
   
   size(800, 800);
   sl_screen = width;
